@@ -69,30 +69,39 @@ app.post('/competitors',function(req,res)
 });
 
 
-app.post("/tweets", function(req,res)
+app.post("/tweets", function(req,res, next)
 {
    var arr = JSON.parse(req.body.arr);
    var db = req.db;
    var solns = [];
-
    async.each(arr, function(datum, cb)
      {
        scraper.getTwitterHandles(datum, function(i)
       {
-          tweetModule.findTweets(i);
+          tweetModule.findTweets(i,cb);
       });
    },
    function(err)
    {
-       //tweetModule.findTweets(solns);
+     if(err)
+      res.jsonp(err);
+      else
+      {
+        console.log("Sending success to client...");
+        res.jsonp({msg : "Done!"});
+        next();
+      }
    });
 
 });
 
 
-
-
-
+app.post("/tweets", function(req,res)
+{
+  console.log("Next route called!");
+  var arr = JSON.parse(req.body.arr);
+  console.log(arr);
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

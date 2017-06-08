@@ -12,7 +12,7 @@ function scrapeData(company, cb)
   let ans = {x:null, name:company["Company Name"]};
   request({"uri": company["URL"], "method": "GET"}, function (error, response, html)
   {
-    //console.log("Requesting...");
+    console.log("Scraping data for "+ans.name+"...");
     if(error)
       console.log(error);
     else
@@ -62,23 +62,15 @@ function getTwitterHandles(company, cb)
 
             }
       }
+
+      else
+        {
+          console.log("Sending to tweet module...");
+          cb({ x: company["Twitter Handle"], name:company["Company Name"]});
+        }
 }
 
 module.exports =
 {
   getTwitterHandles : getTwitterHandles
 }
-
-
-var data = [{"Company Name" : "abc" , "URL" : "http://delhaizegroup.com"} , {"Company Name" : "def" , "URL" : "http://deltadentalins.com"},
-{"Company Name" : "ghi" , "URL" : "http://devonenergy.com"}]
-
-var solns = [];
-var c = data.length;
-function first(){
-
-
-}
-
-
-//first();

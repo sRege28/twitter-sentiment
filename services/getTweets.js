@@ -12,12 +12,12 @@ var config = {
 //var queries = ["21st Century Fox America, Inc.","21st Century North America Insurance Company","24 Hour Fitness Usa, Inc.","3M Company","84 Lumber Company"];
 
 
-function findTweets(dataScraped)
+function findTweets(dataScraped, callback)
 {
    var client = new twitter(config);
    var company = dataScraped.name;
    if(dataScraped.x == null || dataScraped.x === "###")
-      return;
+      callback();
   else
   {
     var handle = dataScraped.x;
@@ -30,12 +30,12 @@ function findTweets(dataScraped)
            console.log("**************"+company+" and "+handle+" :");
            var tweets = results.statuses;
            //console.log(tweets[0]);
-           //console.log(tweets.length);
+           console.log(tweets.length);
            tweets.forEach(function(twit)
            {
              senti = sentiment(twit.text);
              //console.log(twit.text);
-             console.log(senti.score);
+             //console.log(senti.score);
              twit.score = senti.score;
              twit.parent = company;
              twit._id = twit.id;
@@ -45,14 +45,16 @@ function findTweets(dataScraped)
                  if(!err){
                      db.collection("tweets").insertOne(twit,function(err)
                      {
-                       if(!err)
-                        console.log('done!');
+                       //if(err)
+                        //console.log(err);
                      });
 
                      db.collection("companies").update({"Company Name" : company},{"$set" : {"Twitter Handle" : handle}});
                  }
                });
            });
+           console.log("All tweets stored");
+           callback();
        }
      });
   }
