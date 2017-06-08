@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+    <link rel="https://cdn.jsdelivr.net/bootstrap.tagsinput/0.4.2/bootstrap-tagsinput.css" />
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+
+    <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/bootstrap.tagsinput/0.4.2/bootstrap-tagsinput.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function()
+        {
+            //var data = ["Boston Celtics", "Chicago Bulls", "Miami Heat", "Orlando Magic", "Atlanta Hawks", "Philadelphia Sixers", "New York Knicks", "Indiana Pacers", "Charlotte Bobcats", "Milwaukee Bucks", "Detroit Pistons", "New Jersey Nets", "Toronto Raptors", "Washington Wizards", "Cleveland Cavaliers"];
+            $("#companySearch").autocomplete(
+              {
+                source: function(req, res)
+                {
+                  console.log("Sending AJAX...");
+                    $.ajax({
+              url: "/autocomplete",
+              dataType: "jsonp",
+              type: "GET",
+              data: {
+                  term: req.term
+              },
+              success: function (data) {
+                  res($.map(data, function (item) {
+                      return {
+                          label: item.id,
+                          value: item.name,
+                          data: item
+                      };
+                  }));
+              },
+              error: function (xhr) {
+                  console.log(xhr.status + ' : ' + xhr.statusText);
+              }
+          });
+                }
+              });
+        });
+
+       $(document).ready(function()
+       {
+         $("#searchButton").on("click", function()
+           {
+             var term = $("#companySearch").val();
+             $.ajax({
+               url: "/competitors",
+               dataType: "jsonp",
+               type: "POST",
+               data:{ term: term},
+               success: function(data)
+               {
+                 //$("#companyList").show();
+                 $("#companyList").tagsinput({
+                   tagClass: " btn btn-primary",
+                   allowDuplicates: false,
+                   itemValue: '_id',  // this will be used to set id of tag
+                   itemText: 'Company Name' // this will be used to set text of tag});
+                 });
+
+                 data.forEach(function(datum)
+                 {
+                    $("#companyList").tagsinput('add',datum);
+                 });
+
+               },
+               error: function(err)
+               {
+                 console.log(err);
+               }
+
+             });
+
+
+           });
+       });
+
+       $(document).ready(function()
+       {
+         $("#searchTwitter").on("click",function()
+         {
+            if($("#companyList"))
+            {
+              var objs =$("#companyList").tagsinput("items");
+              var arr = $.map(objs, function(n,i)
+              {
+                return n;
+              });
+
+              $.ajax
+              ({
+                url: "/tweets",
+                dataType: "jsonp",
+                type: "POST",
+                data: {arr : JSON.stringify(arr)},
+                success: function(data){},
+                error: function(err){
+                  console.log(err);
+                }
+              });
+            }
+         });
+       });
+
+       $(document).ready(function()
+       {
+         $("#companyList").on("click", ".tag", function()
+         {
+           console.log("Click!");
+         });
+       });
+
+
+    </script>
+  </head>
+
+  <body>
+    <div class="menu">
+      <div class="container-fluid">
+       		<div class="navbar-header">
+      			<a href="#">SenTwitter</a>
+      		</div>
+      	</div>
+      </div>
+
+    <div class = "jumbotron jumbotron-fluid">
+      <div class = "container-fluid">
+        <div class="row">
+          <div class="col-md-6">
+          <h3>Search competitors:</h3>
+              <div id="custom-search-input">
+                  <div class="input-group col-md-12">
+                      <input type="text" class="form-control input-lg" id="companySearch" placeholder= "Enter Company or Institution..." />
+                      <span class="input-group-btn">
+                          <button class="btn btn-info btn-lg" type="button" id="searchButton">
+                              <i class="glyphicon glyphicon-search"></i>
+                          </button>
+                      </span>
+                  </div>
+              </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <input type="text" class="oppningar" id="companyList" multiple="true" readonly/>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <button class="btn btn-secondary" id="searchTwitter">
+              Search for tweets
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </body>
+</html>
