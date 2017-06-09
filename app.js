@@ -15,6 +15,8 @@ var companyModule = require('./services/competitor.js');
 
 var tweetModule = require('./services/getTweets.js');
 
+var filterModule = require("./services/filterData.js");
+
 var scraper = require('./services/webScraper.js');
 
 var async = require("async");
@@ -60,10 +62,19 @@ app.post('/competitors',function(req,res)
 {
    var companyName = req.body.term;
    var db = req.db;
-
+   var filters = JSON.parse(req.body.filters);
+   console.log(filters);
    companyModule.findSimilarCompanies(db, companyName ,function(results,target)
    {
-      res.jsonp(results);
+       filterModule.filterTopCompetitors(results, target, filters, function(err, results)
+       {
+         if(err)
+            console.log(err);
+          else {
+            console.log("Filtered...");
+            res.jsonp(results);
+          }
+       });
    });
 
 });
@@ -99,8 +110,6 @@ app.post("/tweets", function(req,res, next)
 app.post("/tweets", function(req,res)
 {
   console.log("Next route called!");
-  var arr = JSON.parse(req.body.arr);
-  console.log(arr);
 });
 
 // catch 404 and forward to error handler

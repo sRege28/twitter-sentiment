@@ -1,16 +1,8 @@
 var company = require('./competitor.js');
 var mongo = require("mongodb").MongoClient;
 var async = require("async");
-var filters =
-{
-   state : false,
-   revenue : true,
-   profit : false,
-   liabilities: false,
-   employees: false,
-   description: true
-}
 
+var filters;
 function matchByState(competitors, target, cb)
 {
   if(filters.state === false || competitors.length < 5)
@@ -136,8 +128,7 @@ function sortByDescriptionSimilarity(competitors, target, cb)
   if(filters.description === false)
     cb(null, competitors, target);
   else{
-    var text = 'cloud security erp crm';
-    //target['Business Description'];
+    var text = target['Business Description'];
 
     var arrayIds = [];
 
@@ -187,9 +178,9 @@ function dummy(c,t,cb)
     cb(null,c,t);
 }
 
-function getTopFive(competitors,target,cb)
+function getTopN(competitors,target,cb)
 {
-  if(competitors.length < 5)
+  if(competitors.length < 10)
     cb(null, competitors, target);
   else
   {
@@ -198,8 +189,9 @@ function getTopFive(competitors,target,cb)
 }
 
 
-function filterTopCompetitors(competitors, target)
+function filterTopCompetitors(competitors, target, f, callback)
 {
+  filters = f;
   async.waterfall([
     async.apply(sortByDescriptionSimilarity, competitors, target),
     sortByEmployees,
@@ -207,19 +199,22 @@ function filterTopCompetitors(competitors, target)
     sortByRevenue,
     sortByLiabilities,
     matchByState,
-    getTopFive
+    getTopN
     ],
     function(err, results, target)
     {
       if(err)
-        console.log(err);
-      else console.log(results);
+        callback(err, null)
+      else {
+            console.log(results.length);
+            callback(null, results);
+           }
     });
 }
 
 module.exports =
 {
-  filterTopCompetitors : filterTopCompetitors  
+  filterTopCompetitors : filterTopCompetitors
 }
 
 //company.findSimilarCompanies(filterTopCompetitors);
