@@ -33,7 +33,40 @@ db.companies.ensureIndex({"ANZSIC 2006 Description": "text", "UK SIC 2007 Descri
 
 
 
+coll.aggregate([
+  {$match:{
+      $and:[
+            { parent: "Equinox Holdings, Inc." },
+            { score: {$gt : 0} }
+           ]
+    }
+  }
+]
 
+
+
+
+"positive_count":
+  {
+     $sum:
+     {
+        $cond: [{$gt: ["score", 0]},1,0]
+     }
+  },
+
+
+{$sort : {"$retweet_count":1} }
+
+  {$limit: 5},
+  {
+    $project:
+       {
+         "_id": "$parent",
+         "score": "$score",
+         "tweet": "$text",
+         "user" : "$user.name"
+       }
+  }
 
 
 
