@@ -39,7 +39,6 @@ function getCompetitors(db,c,callback)
             }
          });
          console.log("Found competitors");
-         db.close();
          callback(null,arr,c);
       });
   });

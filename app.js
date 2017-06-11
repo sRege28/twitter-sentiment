@@ -19,7 +19,11 @@ var filterModule = require("./services/filterData.js");
 
 var scraper = require('./services/webScraper.js');
 
+var analytics = require('./services/analytics.js');
+
 var async = require("async");
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -99,7 +103,7 @@ app.post("/tweets", function(req,res, next)
       else
       {
         console.log("Sending success to client...");
-        res.jsonp({msg : "Done!"});
+        //res.jsonp({msg : "Done!"});
         next();
       }
    });
@@ -110,6 +114,27 @@ app.post("/tweets", function(req,res, next)
 app.post("/tweets", function(req,res)
 {
   console.log("Next route called!");
+  var arr = JSON.parse(req.body.arr);
+  var db = req.db;
+  var solns = [];
+  //console.log(arr);
+
+  async.each(arr, function(datum, cb)
+    {
+      analytics.applyAnalytics(datum, db, function(report)
+        {
+           //console.log(report);
+           solns.push(report);
+           cb();
+        })
+    }, function(err)
+    {
+      console.log("All values in array done!");
+      if(!err)
+       res.jsonp(solns);
+      else
+      console.log(err);
+    });
 });
 
 // catch 404 and forward to error handler

@@ -1,189 +1,198 @@
-mongo = require("mongodb").MongoClient;
+var async = require("async");
 
-function totalTweetsbySentiment()
+function totalTweetsbySentiment(parent, db, report, callback)
 {
-   mongo.connect("mongodb://localhost:27017/twitter-sentiment", function(err, db)
-   {
-     var target = "Equinox Holdings, Inc.";
-     if(!err)
-      db.collection("tweets", function(err, coll)
-        {
-          coll.aggregate([
-            {$match:{
-                       parent: target
-                    }
-            },
-            {
-              $group:
-              {
-                "_id" : null,
-                "positive_count":
-                  {
-                     $sum:
-                     {
-                        $cond: [{$gt: ["$score", 0]},1,0]
-                     }
-                  },
-                "negative_count":
-                {
-                   $sum:
-                   {
-                      $cond: [{$lt: ["$score", 0]},1,0]
-                   }
-                },
-                "neutral_count":
-                {
-                  $sum:
-                    {
-                       $cond: [{$eq: ["$score",0]},1,0]
-                    }
-                }
-              }
-            }
-          ], function(err, docs)
-          {
-            docs[0].parent = target;
-            console.log(docs);
-          });
-        });
-   })
-}
-
-function averageSentiment()
-{
-  var target = "Equinox Holdings, Inc.";
-  mongo.connect("mongodb://localhost:27017/twitter-sentiment", function(err, db)
-  {
-    db.collection("tweets").aggregate([
-      {$match : {
-                 parent: target
-              }
-      },
-      {$group:
-        {
-           "_id": "$parent",
-           "Average Sentiment Score":
-                {
-                  $avg: "$score"
-                }
-        }
-      }
-    ], function(err,docs)
+  db.collection("tweets", function(err, coll)
     {
-      console.log(docs);
-    });
-  });
-}
-
-function positiveToNegative()
-{
-   var target = "Equinox Holdings, Inc.";
-   mongo.connect("mongodb://localhost:27017/twitter-sentiment", function(err, db)
-   {
-     db.collection("tweets").aggregate([
-       {$match : {
-                  parent: target
-               }
+      coll.aggregate([
+        {$match:{
+                   parent: parent
+                }
         },
-        {$group:
-            {
-              "_id" : "$parent",
-              "positive_count":
-                {
-                   $sum:
-                   {
-                      $cond: [{$gt: ["$score", 0]},1,0]
-                   }
-                },
-              "negative_count":
+        {
+          $group:
+          {
+            "_id" : null,
+            "positive_count":
               {
                  $sum:
                  {
-                    $cond: [{$lt: ["$score", 0]},1,0]
+                    $cond: [{$gt: ["$score", 0]},1,0]
                  }
               },
-          }
-        },
-          {$project:
-            {"PtoNRatio": {$divide:
-                              ["$positive_count","$negative_count"]
-                           }
+            "negative_count":
+            {
+               $sum:
+               {
+                  $cond: [{$lt: ["$score", 0]},1,0]
+               }
+            },
+            "neutral_count":
+            {
+              $sum:
+                {
+                   $cond: [{$eq: ["$score",0]},1,0]
+                }
+            },
+
+            "total_count":
+            {
+              $sum: 1
             }
           }
-     ], function(err, docs)
-     {
-       console.log(docs);
-     });
+        }
+      ], function(err, docs)
+      {
+        //docs[0].parent = parent;
+        report.countOftweets = docs;
+        callback();
+      });
+    });
+}
+
+function averageSentiment(parent, db, report, callback)
+{
+  db.collection("tweets").aggregate([
+    {$match : {
+               parent: parent
+            }
+    },
+    {$group:
+      {
+         "_id": null,
+         "Average Sentiment Score":
+              {
+                $avg: "$score"
+              }
+      }
+    }
+  ], function(err,docs)
+  {
+    if(err)
+      console.log(err);
+     report.average_sentiment = docs;
+    callback();
+  });
+}
+
+function positiveToNegative(parent, db, report, callback)
+{
+   db.collection("tweets").aggregate([
+     {$match : {
+                parent: parent
+             }
+      },
+      {$group:
+          {
+            "_id" : "$parent",
+            "positive_count":
+              {
+                 $sum:
+                 {
+                    $cond: [{$gt: ["$score", 0]},1,0]
+                 }
+              },
+            "negative_count":
+            {
+               $sum:
+               {
+                  $cond: [{$lt: ["$score", 0]},1,0]
+               }
+            },
+        }
+      },
+        {$project:
+          {"PtoNRatio": {$cond: [{$eq: ['$negative_count', 0]}, '$positive_count',
+                          {$divide:
+                                ["$positive_count","$negative_count"]} ]
+                        }
+          }
+        }
+   ], function(err, docs)
+   {
+     if(err)
+       console.log(err);
+     report.positive_to_negative = docs;
+     callback();
    });
 }
 
-function highestRetweeted()
+function highestRetweeted(parent, db, report, callback)
 {
-  var target = "Equinox Holdings, Inc.";
-  mongo.connect("mongodb://localhost:27017/twitter-sentiment", function(err, db)
-  {
-    db.collection("tweets").aggregate([
-      {$match : {
-                 parent: target
-              }
-       },
-       {$sort : {"retweet_count": -1} },
-       {$limit: 5},
-       {
-         $project:
-            {
-              "_id": "$parent",
-              "score": "$score",
-              "tweet": "$text",
-              "retweet_count": "$retweet_count",
-              "user": "$user.name"
+
+  db.collection("tweets").aggregate([
+    {$match : {
+               parent: parent
             }
-       }
-     ], function(err, docs)
-      {
-        if(err)
-         console.log(err);
-        console.log(docs);
-      });
-      db.close();
-  });
+     },
+     {$sort : {"retweet_count": -1} },
+     {$limit: 5},
+     {
+       $project:
+          {
+
+            "score": "$score",
+            "tweet": "$text",
+            "retweet_count": "$retweet_count",
+            "user": "$user.name"
+          }
+     }
+   ], function(err, docs)
+    {
+      if(err)
+        console.log(err);
+      report.highest_retweeted = docs;
+      callback();
+    });
+
 }
 
 
-function highestFavorited()
+function highestFavorited(parent, db, report, callback)
 {
-  var target = "Equinox Holdings, Inc.";
-  mongo.connect("mongodb://localhost:27017/twitter-sentiment", function(err, db)
-  {
-    db.collection("tweets").aggregate([
-      {$match : {
-                 parent: target
-              }
-       },
-       {$sort : {"favorite_count": -1} },
-       {$limit: 5},
-       {
-         $project:
-            {
-              "_id": "$parent",
-              "score": "$score",
-              "tweet": "$text",
-              "favorite_count": "$favorite_count",
-              "user": "$user.name"
+  db.collection("tweets").aggregate([
+    {$match : {
+               parent: parent
             }
-       }
-     ], function(err, docs)
-      {
-        if(err)
-         console.log(err);
-        console.log(docs);
-      });
-      db.close();
-  });
+     },
+     {$sort : {"favorite_count": -1} },
+     {$limit: 5},
+     {
+       $project:
+          {
+
+            "score": "$score",
+            "tweet": "$text",
+            "favorite_count": "$favorite_count",
+            "user": "$user.name"
+          }
+     }
+   ], function(err, docs)
+    {
+      if(err)
+        console.log(err);
+      report.highest_favorited = docs;
+      callback();
+    });
 }
 
+function applyAnalytics(company, db, callback)
+{
+  //console.log("Satrtin analytics");
+  var analyzed_tweet = {};
+  analyzed_tweet.parent = company["Company Name"];
+  analyzed_tweet.average_sentiment = null;
+  var parent = company["Company Name"];
+  async.applyEach([totalTweetsbySentiment, averageSentiment, positiveToNegative, highestRetweeted, highestFavorited], parent, db, analyzed_tweet,
+    function(err)
+      {
+           if(err) console.log(err);
+           console.log("All analytics completed!");
+           callback(analyzed_tweet);
+      });
+}
 
-//totalTweetsbySentiment();
-//averageSentiment();
-//positiveToNegative();
-//highestFavorited();
+module.exports =
+{
+  applyAnalytics : applyAnalytics
+}

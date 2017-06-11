@@ -238,3 +238,17 @@ color: #04A3ED;
       background-color: #FD4A3E;
       color: white;
     }
+
+    .dashboard{
+      display:flex;
+      background-color: white;
+      flex-flow: row wrap;
+      position: relative;
+    }
+
+    .dashboard-item{
+      flex-grow: 1;
+      flex-shrink:1;
+      flex-basis: 20%;
+      margin: 4px;
+    }

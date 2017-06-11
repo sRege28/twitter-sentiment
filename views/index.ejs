@@ -11,6 +11,12 @@
     <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     <script src="https://cdn.jsdelivr.net/bootstrap.tagsinput/0.4.2/bootstrap-tagsinput.js"></script>
 
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {packages: ['corechart','table']});
+    </script>
+
+
     <script type="text/javascript">
 
     $(function () {
@@ -99,6 +105,7 @@ $('.button-checkbox').each(function () {
                   term: req.term
               },
               success: function (data) {
+                //console.log(data);
                   res($.map(data, function (item) {
                       return {
                           label: item.id,
@@ -194,9 +201,13 @@ $('.button-checkbox').each(function () {
                 success: function(data)
                 {
                   console.log(data);
+                  displayVisualizations(data);
                 },
                 error: function(err){
-                  console.log(err.status+" "+err.statusText);
+                  if(err)
+                    console.log(err)
+                  else
+                    console.log(err.status+" "+err.statusText);
                 }
               });
             }
@@ -212,6 +223,64 @@ $('.button-checkbox').each(function () {
        });
 
 
+
+function displayVisualizations(data)
+{
+    data.forEach(function(datum,i)
+    {
+      //console.log("Hello");
+      $panel = $('<div class="panel panel-primary dashboard-item"> <div class="panel-heading"></div><div class="panel-body"></div></div>');
+      $(".dashboard").append($panel);
+      //console.log(datum.parent);
+      $panel.find(".panel-heading").html(datum.parent);
+      $body = $panel.find(".panel-body");
+
+      if(datum.countOftweets.length !=0)
+       {
+         $body.append("<div class=piechart id ='pc"+i+"'></div>");
+          var data = google.visualization.arrayToDataTable([
+            ["Sentiment","Tweet count"],
+            ["Positive", datum.countOftweets[0].positive_count],
+            ["Neutral", datum.countOftweets[0].neutral_count],
+            ["Negative", datum.countOftweets[0].negative_count]
+          ]);
+          var chart = new google.visualization.PieChart(document.getElementById("pc"+i));
+          chart.draw(data,{title:"Tweet distribution by Sentiment Score:"});
+
+          $body.append("<div class=favorited id='favorite"+i+"''></div>");
+          var data2 = new google.visualization.DataTable();
+          data2.addColumn( "string","Tweet");
+          data2.addColumn("string", "User");
+          data2.addColumn("number", "Sentiment");
+          data2.addColumn("number", "Favorite Count");
+
+          var arr = datum.highest_favorited;
+          arr.forEach(function(item)
+            {
+              data2.addRow([item.tweet, item.user, item.score, item.favorite_count])
+            });
+          var table = new google.visualization.Table(document.getElementById("favorite"+i));
+          table.draw(data2, {showRowNumber: true, width: '100%', height: '50%'});
+
+          $body.append("<div class=retweeted id='retweet"+i+"'></div>");
+          var data3 = new google.visualization.DataTable();
+          data3.addColumn( "string","Tweet");
+          data3.addColumn("string", "User");
+          data3.addColumn("number", "Sentiment");
+          data3.addColumn("number", "Retweet Count");
+
+          var arr = datum.highest_retweeted;
+          arr.forEach(function(item)
+            {
+              data3.addRow([item.tweet, item.user, item.score, item.retweet_count])
+            });
+          var table = new google.visualization.Table(document.getElementById("retweet"+i));
+          table.draw(data3, {showRowNumber: true, width: '100%', height: '50%'});
+        }
+        else{$body.html("<h4>No data found</h4>")}
+
+    });
+}
     </script>
   </head>
 
@@ -279,7 +348,7 @@ $('.button-checkbox').each(function () {
             </button>
           </div>
         </div>
-
+        <div class = "dashboard"></div>
       </div>
     </div>
   </body>
