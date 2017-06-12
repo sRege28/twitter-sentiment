@@ -7,7 +7,7 @@ function matchByState(competitors, target, cb)
 {
   if(filters.state === false || competitors.length < 5)
   {
-     //console.log("Passed through state filtering");
+     //console.log("Passed through state filtering")
      cb(null,competitors, target);
   }
   else
@@ -17,7 +17,7 @@ function matchByState(competitors, target, cb)
       if(doc['State Or Province'] == target['State Or Province'])
         return doc;
     });
-    console.log("Passed through state filtering");
+    //console.log("Passed through state filtering");
     cb(null, resultArr, target);
   }
 }
@@ -52,15 +52,14 @@ function sortByProfits(competitors, target,cb)
       {
         var a1 = Math.abs(a['Pre Tax Profit USD'] - targetProfits);
         var b1 = Math.abs(b['Pre Tax Profit USD'] - targetProfits);
-        //console.log(a1 +" "+b1)
         return a1 - b1;
       });
-      console.log("Passed through profits");
+      //console.log("Passed through profits");
       cb(null, competitors, target);
   }
     else {
       competitors.sort(function(a,b){ return b['Pre Tax Profit USD'] - a['Pre Tax Profit USD']})
-        console.log("Passed through profits");
+        //console.log("Passed through profits");
         cb(null,competitors, target);
     }
 
@@ -166,17 +165,6 @@ function sortByDescriptionSimilarity(competitors, target, cb)
 }
 
 
-function dummy(c,t,cb)
-{
-  console.log("Dummy");
-  console.log(Array.isArray(c));
-  console.log(typeof t);
-  if(c === null || c=== undefined)
-   console.log("c broken");
-   if(t === null || t === undefined)
-    console.log("t broken");
-    cb(null,c,t);
-}
 
 function getTopN(competitors,target,cb)
 {
@@ -216,5 +204,3 @@ module.exports =
 {
   filterTopCompetitors : filterTopCompetitors
 }
-
-//company.findSimilarCompanies(filterTopCompetitors);

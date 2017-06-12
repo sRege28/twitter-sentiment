@@ -1,11 +1,6 @@
 var mongo = require("mongodb").MongoClient;
-//var config = require("../config.js")
 var async = require("async");
-const EventEmitter = require('events');
 
-class MyEmitter extends EventEmitter {};
-
-const emitter = new MyEmitter();
 
 function connect(db,companyName,callback){
         db.collection("companies",function(err, coll)

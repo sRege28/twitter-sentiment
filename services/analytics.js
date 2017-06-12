@@ -176,6 +176,31 @@ function highestFavorited(parent, db, report, callback)
     });
 }
 
+function getScoreDistribution(parent, db, report, callback)
+{
+  console.log("Score distrib");
+  db.collection("tweets").aggregate([
+    {$match : {
+               parent: parent
+            }
+     },
+     {
+       $project:
+                {
+                  "score": "$score",
+                  "tweet": "$text",
+                  "created_at": "$created_at"
+                }
+     }
+  ], function(err, docs)
+    {
+      if(err)
+       console.log(err);
+      report.score_by_date = docs;
+      callback();
+    })
+}
+
 function applyAnalytics(company, db, callback)
 {
   //console.log("Satrtin analytics");
@@ -183,7 +208,7 @@ function applyAnalytics(company, db, callback)
   analyzed_tweet.parent = company["Company Name"];
   analyzed_tweet.average_sentiment = null;
   var parent = company["Company Name"];
-  async.applyEach([totalTweetsbySentiment, averageSentiment, positiveToNegative, highestRetweeted, highestFavorited], parent, db, analyzed_tweet,
+  async.applyEach([totalTweetsbySentiment, averageSentiment, positiveToNegative, highestRetweeted, highestFavorited, getScoreDistribution], parent, db, analyzed_tweet,
     function(err)
       {
            if(err) console.log(err);

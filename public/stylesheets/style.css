@@ -70,9 +70,9 @@ color: #04A3ED;
 }
 
 .jumbotron{
-  padding:90px 0 90px 0;
+  padding:50px 0 50px 0;
   margin-bottom:70px;
-  background-color: #e5e3e5;
+  background-color: #F3EFEF;
 }
 
 #custom-search-form {
@@ -244,11 +244,36 @@ color: #04A3ED;
       background-color: white;
       flex-flow: row wrap;
       position: relative;
+      overflow: hidden;
+
     }
 
     .dashboard-item{
       flex-grow: 1;
       flex-shrink:1;
-      flex-basis: 20%;
+      flex-basis: 50% - 4px;
       margin: 4px;
+    }
+
+    .piechart{
+       width: 30%;
+       height:80%;
+       align: left;
+       top: 0px;
+    }
+
+    .favorited{
+       margin: 4px;
+    }
+
+    .retweeted{
+       margin: 4px;
+    }
+
+    .header_row{
+        background-color: #c5d8f7;
+    }
+
+    .odd_row{
+        background-color: #d2e2f2;
     }

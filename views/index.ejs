@@ -208,6 +208,7 @@ $('.button-checkbox').each(function () {
                 {
                   console.log(data);
                   displayVisualizations(data);
+
                 },
                 error: function(err){
                   if(err)
@@ -251,9 +252,35 @@ function displayVisualizations(data)
             ["Negative", datum.countOftweets[0].negative_count]
           ]);
           var chart = new google.visualization.PieChart(document.getElementById("pc"+i));
-          chart.draw(data,{title:"Tweet distribution by Sentiment Score:"});
+          var options = {'title':'Tweet distribution by sentiment:',
+                     'width':480,
+                     'height':400,
+                     'chartArea' :{top: 30, left: 30},
+                     'colors' :["#16c413","#459ce8","#f24729"]
+                   };
+          chart.draw(data,options);
 
-          $body.append("<div class=favorited id='favorite"+i+"''></div>");
+          $body.append("<div class=scatterchart id='sc"+i+"'></div>");
+
+          var data = new google.visualization.DataTable();
+          data.addColumn('date','Date');
+          data.addColumn('number', 'Score');
+          data.addColumn({type: 'string', role:'tooltip'});
+
+          datum.score_by_date.forEach(function(obj)
+          {
+            data.addRow([new Date(obj.created_at), obj.score, obj.tweet]);
+          });
+
+          var chart = new google.visualization.ScatterChart(document.getElementById('sc'+i));
+          chart.draw(data, {title: 'Score distribution by date',
+                      width: 600, height: 400,
+                      vAxis: {title: "sentiment score", titleTextStyle: {color: "green"}},
+                      hAxis: {title: "time", titleTextStyle: {color: "green"}},
+                      lineWidth: 0}
+              );
+
+          $body.append("<h5>Top favorited tweets:</h5><div class=favorited id='favorite"+i+"''></div>");
           var data2 = new google.visualization.DataTable();
           data2.addColumn( "string","Tweet");
           data2.addColumn("string", "User");
@@ -266,9 +293,14 @@ function displayVisualizations(data)
               data2.addRow([item.tweet, item.user, item.score, item.favorite_count])
             });
           var table = new google.visualization.Table(document.getElementById("favorite"+i));
-          table.draw(data2, {showRowNumber: true, width: '100%', height: '50%'});
+          table.draw(data2, {showRowNumber: false, width: '100%', height: '50%',
+                              cssClassNames: {headerRow: "header_row",
+                                              tableRow:  "table_row",
+                                              oddTableRow: "odd_row"
+                                              }
+                              });
 
-          $body.append("<div class=retweeted id='retweet"+i+"'></div>");
+          $body.append("<h5>Top retweeted tweets:</h5><div class=retweeted id='retweet"+i+"'></div>");
           var data3 = new google.visualization.DataTable();
           data3.addColumn( "string","Tweet");
           data3.addColumn("string", "User");
@@ -281,7 +313,16 @@ function displayVisualizations(data)
               data3.addRow([item.tweet, item.user, item.score, item.retweet_count])
             });
           var table = new google.visualization.Table(document.getElementById("retweet"+i));
-          table.draw(data3, {showRowNumber: true, width: '100%', height: '50%'});
+
+          table.draw(data3, {showRowNumber: false,
+                             width: '100%',
+                             height: '50%',
+                             alternatingRowStyles:true,
+                            cssClassNames: {headerRow: "header_row",
+                                            tableRow:  "table_row",
+                                            oddTableRow: "odd_row"
+                                          }
+                          });
         }
         else{$body.html("<h4>No data found</h4>")}
 
@@ -302,7 +343,7 @@ function displayVisualizations(data)
     <div class = "jumbotron jumbotron-fluid">
       <div class = "container-fluid">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-10">
           <h3>Search competitors:</h3>
               <div id="custom-search-input">
                   <div class="input-group col-md-12">

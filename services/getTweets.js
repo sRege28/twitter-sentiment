@@ -9,9 +9,6 @@ var config = {
   access_token_secret: 'ooxjAMuhjahgvr7unGiRvTx86r8NGsvdP4yw9NSKoUTOP'
 };
 
-//var queries = ["21st Century Fox America, Inc.","21st Century North America Insurance Company","24 Hour Fitness Usa, Inc.","3M Company","84 Lumber Company"];
-
-
 function findTweets(dataScraped, callback)
 {
    var client = new twitter(config);
