@@ -12,7 +12,7 @@ function scrapeData(company, cb)
   let ans = {x:null, name:company["Company Name"]};
   request({"uri": company["URL"], "method": "GET"}, function (error, response, html)
   {
-    console.log("Scraping data for "+ans.name+"...");
+    console.log("webScraper.js::15:/Scraping data for "+ans.name+"...");
     if(error)
       console.log(error);
     else
@@ -36,10 +36,13 @@ function scrapeData(company, cb)
           }
           if(ans.x === null)
             {
-              console.log("No luck");
+              console.log("webScraper.js::39:/ company "+company["Company Name"]+"No luck finding handle");
               ans.x = '###';
              }
-          else {ans.x = ans.x[1];}
+          else {
+            ans.x = ans.x[1];
+            console.log("webScraper.js::44:/ company "+company["Company Name"]+"handle found: "+ans.x);
+          }
       }
 
     }
@@ -51,21 +54,23 @@ function getTwitterHandles(company, cb)
 {
    if(company["Twitter Handle"] === null || company["Twitter Handle"] === undefined  ||  company["Twitter Handle"] === "")
     {
+       console.log("webScraper.js::54:/ company "+company["Company Name"]+" twitter handle not found, scraping the web...")
         if(company["URL"] === null || company["URL"] === undefined || company["URL"] === "")
            {
              company["Twitter Handle"] = "###";
-             cb("###");
+             console.log("webScraper.js::58:/ company "+company["Company Name"]+" URL null");
+             cb({name:company["Company Name"], x:"###"});
            }
 
        else {
+          console.log("webScraper.js::58:/ company "+company["Company Name"]+" URL found"+company["URL"]);
           scrapeData(company, cb);
-
             }
       }
 
       else
         {
-          console.log("Sending to tweet module...");
+          console.log("webScraper.js::70:/ company "+company["Company Name"]+"exists, sending to tweet module...");
           cb({ x: company["Twitter Handle"], name:company["Company Name"]});
         }
 }

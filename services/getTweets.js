@@ -16,7 +16,7 @@ function findTweets(dataScraped, callback)
 {
    var client = new twitter(config);
    var company = dataScraped.name;
-   if(dataScraped.x == null || dataScraped.x === "###")
+   if(dataScraped.x == null || dataScraped.x === "###" || dataScraped.x === "" || dataScraped.x === undefined)
       callback();
   else
   {
@@ -27,7 +27,7 @@ function findTweets(dataScraped, callback)
          throw err;
        else
        {
-           console.log("**************"+company+" and "+handle+" :");
+           console.log("getTweets::30:/ Getting tweet number for"+company+" and "+ handle+" :");
            var tweets = results.statuses;
            //console.log(tweets[0]);
            console.log(tweets.length);

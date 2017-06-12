@@ -136,6 +136,8 @@ $('.button-checkbox').each(function () {
                data:{term: term, filters: JSON.stringify(filters)},
                success: function(data)
                {
+                 //console.log(data);
+                 localStorage.setItem("current_search",JSON.stringify(data.company));
                  $("#companyList").tagsinput({
                    tagClass: " btn btn-primary",
                    allowDuplicates: false,
@@ -143,9 +145,9 @@ $('.button-checkbox').each(function () {
                    itemText: 'Company Name' // this will be used to set text of tag});
                  });
 
-                 data.forEach(function(datum)
+                 data.competitors.forEach(function(datum)
                  {
-                   console.log(data);
+                   //console.log(data);
                     $("#companyList").tagsinput('add',datum);
                  });
 
@@ -182,16 +184,20 @@ $('.button-checkbox').each(function () {
 
        $(document).ready(function()
        {
+
          $("#searchTwitter").on("click",function()
          {
+            var arr =[];
+            //console.log(JSON.parse(startingCompany));
             if($("#companyList"))
             {
               var objs =$("#companyList").tagsinput("items");
-              var arr = $.map(objs, function(n,i)
+              arr = $.map(objs, function(n,i)
               {
                 return n;
               });
-
+              arr.push(JSON.parse(localStorage.getItem("current_search")));
+              console.log(arr);
               $.ajax
               ({
                 url: "/tweets",
@@ -307,6 +313,7 @@ function displayVisualizations(data)
                           </button>
                       </span>
                   </div>
+
                   <div class = "row">
                     <div class = "col-md-12">
                       <span class="button-checkbox">

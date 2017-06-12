@@ -76,7 +76,7 @@ app.post('/competitors',function(req,res)
             console.log(err);
           else {
             console.log("Filtered...");
-            res.jsonp(results);
+            res.jsonp({competitors: results, company: target});
           }
        });
    });
@@ -87,10 +87,14 @@ app.post('/competitors',function(req,res)
 app.post("/tweets", function(req,res, next)
 {
    var arr = JSON.parse(req.body.arr);
+   //console.log("Length of array "+arr.length+" ok\n");
+   //console.log(arr);
    var db = req.db;
    var solns = [];
+
    async.each(arr, function(datum, cb)
      {
+       //console.log(datum);
        scraper.getTwitterHandles(datum, function(i)
       {
           tweetModule.findTweets(i,cb);
@@ -107,7 +111,6 @@ app.post("/tweets", function(req,res, next)
         next();
       }
    });
-
 });
 
 
@@ -120,7 +123,7 @@ app.post("/tweets", function(req,res)
   //console.log(arr);
 
   async.each(arr, function(datum, cb)
-    {
+    { 
       analytics.applyAnalytics(datum, db, function(report)
         {
            //console.log(report);
