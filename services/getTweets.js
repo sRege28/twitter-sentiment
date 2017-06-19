@@ -3,16 +3,10 @@ var sentiment = require('sentiment');
 var mongo = require("mongodb").MongoClient;
 var config = require('../config.js');
 
-var twitter_config = {
-  consumer_key: 'ysAleI7T1Ww9m2XzVPjaj5qRU',
-  consumer_secret: 'J28QRycBLELqniO9beCmkkQf4M0W5i3ptZVxKB86wlNEkmC9n5',
-  access_token_key: '1533314264-psvgsbn2SoLR0dio8BX5QgSArCpA2zAilOs5vJy',
-  access_token_secret: 'ooxjAMuhjahgvr7unGiRvTx86r8NGsvdP4yw9NSKoUTOP'
-};
 
 function findTweets(dataScraped, callback)
 {
-   var client = new twitter(twitter_config);
+   var client = new twitter(config.twitter_tokens);
    var company = dataScraped.name;
    if(dataScraped.x == null || dataScraped.x === "###" || dataScraped.x === "" || dataScraped.x === undefined)
       callback();
