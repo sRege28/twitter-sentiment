@@ -244,6 +244,14 @@ function displayVisualizations(data)
 
       if(datum.countOftweets.length !=0)
        {
+         var totalTweets = "<h5>Total tweets ="+ datum.countOftweets[0].positive_count+"</h5>";
+         var ratio = "<h5>Positive-to-negative ratio ="+datum.positive_to_negative[0].PtoNRatio+"</h5>";
+         var avg_sentiment = "<h5>Average sentiment ="+datum.average_sentiment[0]["Average Sentiment Score"]+"</h5>";
+
+         $body.append(totalTweets);
+         $body.append(ratio);
+         $body.append(avg_sentiment);
+
          $body.append("<div class=piechart id ='pc"+i+"'></div>");
           var data = google.visualization.arrayToDataTable([
             ["Sentiment","Tweet count"],
