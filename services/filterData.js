@@ -1,6 +1,7 @@
 var company = require('./competitor.js');
 var mongo = require("mongodb").MongoClient;
 var async = require("async");
+var config = require('../config.js');
 
 var filters;
 function matchByState(competitors, target, cb)
@@ -134,7 +135,7 @@ function sortByDescriptionSimilarity(competitors, target, cb)
     competitors.forEach(function(f)
        { arrayIds.push(f["_id"]); });
 
-       mongo.connect("mongodb://localhost:27017/twitter-sentiment", function(err, db)
+       mongo.connect(config.db.url, function(err, db)
          {
            if(err)
             console.log(err);

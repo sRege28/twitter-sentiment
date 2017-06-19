@@ -1,8 +1,9 @@
 var twitter = require('twitter');
 var sentiment = require('sentiment');
 var mongo = require("mongodb").MongoClient;
+var config = require('../config.js');
 
-var config = {
+var twitter_config = {
   consumer_key: 'ysAleI7T1Ww9m2XzVPjaj5qRU',
   consumer_secret: 'J28QRycBLELqniO9beCmkkQf4M0W5i3ptZVxKB86wlNEkmC9n5',
   access_token_key: '1533314264-psvgsbn2SoLR0dio8BX5QgSArCpA2zAilOs5vJy',
@@ -11,7 +12,7 @@ var config = {
 
 function findTweets(dataScraped, callback)
 {
-   var client = new twitter(config);
+   var client = new twitter(twitter_config);
    var company = dataScraped.name;
    if(dataScraped.x == null || dataScraped.x === "###" || dataScraped.x === "" || dataScraped.x === undefined)
       callback();
@@ -37,7 +38,7 @@ function findTweets(dataScraped, callback)
              twit.parent = company;
              twit._id = twit.id;
              twit.parent_handle = handle;
-             mongo.connect("mongodb://localhost:27017/twitter-sentiment", function(err, db)
+             mongo.connect(config.db.url, function(err, db)
                {
                  if(!err){
                      db.collection("tweets").insertOne(twit,function(err)

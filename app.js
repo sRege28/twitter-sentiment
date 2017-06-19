@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
+var config = require('./config.js');
 
 var app = express();
 
@@ -37,7 +38,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(mongoPool('mongodb://localhost:27017/twitter-sentiment'));
+app.use(mongoPool(config.db.url));
 
 app.use('/', index);
 app.use('/users', users);
@@ -123,7 +124,7 @@ app.post("/tweets", function(req,res)
   //console.log(arr);
 
   async.each(arr, function(datum, cb)
-    { 
+    {
       analytics.applyAnalytics(datum, db, function(report)
         {
            //console.log(report);
