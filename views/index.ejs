@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
     <link rel="https://cdn.jsdelivr.net/bootstrap.tagsinput/0.4.2/bootstrap-tagsinput.css" />
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/card.css'>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Aller">
 
     <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
@@ -266,7 +268,7 @@ function displayVisualizations(data)
          $body.append(ratio);
          $body.append(avg_sentiment);
 
-         $body.append("<div class=piechart id ='pc"+i+"'></div>");
+         $body.append("<div class='card'><div class= 'card-block'><div class=piechart id ='pc"+i+"'></div></div></div>");
           var data = google.visualization.arrayToDataTable([
             ["Sentiment","Tweet count"],
             ["Positive", datum.countOftweets[0].positive_count],
@@ -282,7 +284,7 @@ function displayVisualizations(data)
                    };
           chart.draw(data,options);
 
-          $body.append("<div class=scatterchart id='sc"+i+"'></div>");
+          $body.append("<div class='card'><div class= 'card-block'><div class= 'scatterchart' id='sc"+i+"'></div></div></div>");
 
           var data = new google.visualization.DataTable();
           data.addColumn('date','Date');
@@ -302,7 +304,7 @@ function displayVisualizations(data)
                       lineWidth: 0}
               );
 
-          $body.append("<h5>Top favorited tweets:</h5><div class=favorited id='favorite"+i+"''></div>");
+          $body.append("<div class='card'><div class= 'card-block'><h5>Top favorited tweets:</h5><div class=favorited id='favorite"+i+"''></div></div></div>");
           var data2 = new google.visualization.DataTable();
           data2.addColumn( "string","Tweet");
           data2.addColumn("string", "User");
@@ -322,7 +324,7 @@ function displayVisualizations(data)
                                               }
                               });
 
-          $body.append("<h5>Top retweeted tweets:</h5><div class=retweeted id='retweet"+i+"'></div>");
+          $body.append("<div class='card'><div class= 'card-block'><h5>Top retweeted tweets:</h5><div class=retweeted id='retweet"+i+"'></div></div></div>");
           var data3 = new google.visualization.DataTable();
           data3.addColumn( "string","Tweet");
           data3.addColumn("string", "User");
@@ -366,7 +368,7 @@ function displayVisualizations(data)
       <div class = "container-fluid">
         <div class="row">
           <div class="col-md-10">
-          <h3>Search competitors:</h3>
+          <h4 id="search-label">Search competitors:</h4>
               <div id="custom-search-input">
                   <div class="input-group col-md-12">
                       <input type="text" class="form-control input-lg" id="companySearch" placeholder= "Enter Company or Institution..." />
@@ -379,26 +381,28 @@ function displayVisualizations(data)
 
                   <div class = "row">
                     <div class = "col-md-12">
-                      <span class="button-checkbox">
-                        <button type="button" class="btn" data-color="primary">State</button>
-                        <input type="checkbox" name="filters" id="state" class="hidden" />
-                      </span>
-                      <span class="button-checkbox">
-                        <button type="button" class="btn" data-color="primary">Revenue</button>
-                        <input type="checkbox" name="filters" id="revenue" class="hidden"/>
-                      </span>
-                      <span class="button-checkbox">
-                        <button type="button" class="btn" data-color="primary">Profits</button>
-                        <input type="checkbox" name="filters" id="profit" class="hidden" />
-                      </span>
-                      <span class="button-checkbox">
-                        <button type="button" class="btn" data-color="primary">Liabilities</button>
-                        <input type="checkbox" name="filters" id="liabilities" class="hidden" />
-                      </span>
-                      <span class="button-checkbox">
-                        <button type="button" class="btn" data-color="primary">Employees</button>
-                        <input type="checkbox" name="filters" id="employees" class="hidden" />
-                      </span>
+                      <div class= "filterGroup">
+                        <span class="button-checkbox">
+                          <button type="button" class="btn" data-color="primary">State</button>
+                          <input type="checkbox" name="filters" id="state" class="hidden" />
+                        </span>
+                        <span class="button-checkbox">
+                          <button type="button" class="btn" data-color="primary">Revenue</button>
+                          <input type="checkbox" name="filters" id="revenue" class="hidden"/>
+                        </span>
+                        <span class="button-checkbox">
+                          <button type="button" class="btn" data-color="primary">Profits</button>
+                          <input type="checkbox" name="filters" id="profit" class="hidden" />
+                        </span>
+                        <span class="button-checkbox">
+                          <button type="button" class="btn" data-color="primary">Liabilities</button>
+                          <input type="checkbox" name="filters" id="liabilities" class="hidden" />
+                        </span>
+                        <span class="button-checkbox">
+                          <button type="button" class="btn" data-color="primary">Employees</button>
+                          <input type="checkbox" name="filters" id="employees" class="hidden" />
+                        </span>
+                      </div>
                     </div>
                   </div>
               </div>

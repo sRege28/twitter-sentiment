@@ -6,6 +6,7 @@ body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   height: 100%;
+  background-color: #c0deed;
 }
 
 a {
@@ -14,16 +15,18 @@ a {
 
 .menu
 {
-background-color: #3E62D7;
+background-color: #00aced;
 width:100%;
 height: 40px;
-padding: 0 10px;
+padding: 0 0px;
 position: fixed;
 margin: 0px;
 z-index: 1;
 opacity: 0.9;
 top: 0;
 left: 0;
+box-shadow: 0 8px 6px -6px #999;
+
 }
 
 .menu  .navbar-nav > .active > a
@@ -50,6 +53,7 @@ background-color: #04A3ED;
 {
   top: 5px;
   padding-top: 5px;
+
 }
 
 .navbar-header > a
@@ -70,9 +74,26 @@ color: #04A3ED;
 }
 
 .jumbotron{
-  padding:50px 0 50px 0;
+  padding: 15px 0 20px 0;
   margin-bottom:70px;
-  background-color: #F3EFEF;
+  background-color: rgba(255,255, 255, 0.75);
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
+}
+
+#search-label{
+  font-family: 'Aller', sans-serif;
+}
+
+#companySearch{
+  height: 35px;
+  border-radius: 3px;
+  font-size: 12pt;
+}
+
+#searchButton{
+  height: 35px;
+  background-color: #0084b4;
 }
 
 #custom-search-form {
@@ -107,6 +128,7 @@ color: #04A3ED;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
+    vertical-align: middle;
 }
 
 .search-query:focus + button {
@@ -143,6 +165,15 @@ color: #04A3ED;
     *border-right-width: 2px;
     *border-bottom-width: 2px;
 }
+
+
+
+.filterGroup{
+  margin: 10px 0px 0px 0px;
+}
+
+
+
 .ui-menu-item > a.ui-corner-all {
     display: block;
     padding: 5px 15px;
@@ -170,6 +201,9 @@ color: #04A3ED;
         cursor: text;
         border: none;
         shadow: none;
+        border-radius: 2px;
+        margin: 3px;
+        padding: 3px;
     }
 
     #companyList{
@@ -205,23 +239,22 @@ color: #04A3ED;
      }
 
     .bootstrap-tagsinput input{
-      display: none !important;
-      width: 0px !important;
-      background-color: red;
+      display: none;
+
     }
 
     .bootstrap-tagsinput .tag [data-role="remove"] {
       float: right;
       cursor: pointer;
-      color: red;
-      width: 5px;
-      height: 5px;
+      color: white;
+      width: 3px;
+      height: 3px;
     }
     .bootstrap-tagsinput .tag [data-role="remove"]:after {
       content: "X";
       padding: 0px 2px;
-      width: 5px;
-      height: 5px;
+      width: 3px;
+      height: 3px;
     }
     .bootstrap-tagsinput .tag [data-role="remove"]:hover {
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -230,10 +263,13 @@ color: #04A3ED;
       box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
     }
 
+
+
     .btn.btn-secondary{
       margin-top: 10px;
-      background-color: #FD4A3E;
+      background-color:  red;
       color: white;
+      opacity: 0.65;
     }
 
     .dashboard{
@@ -242,6 +278,7 @@ color: #04A3ED;
       flex-flow: row wrap;
       position: relative;
       overflow: hidden;
+      background-color: rgba(255,255, 255, 0.75);
 
     }
 
@@ -250,6 +287,11 @@ color: #04A3ED;
       flex-shrink:1;
       flex-basis: 50% - 4px;
       margin: 4px;
+      background-color: white;
+    }
+
+    .panel-body{
+      background-color: rgba(255,255, 255, 0.75);
     }
 
     .piechart{
@@ -257,6 +299,15 @@ color: #04A3ED;
        height:80%;
        align: left;
        top: 0px;
+       padding: 4px;
+    }
+
+    .scatterchart{
+      width: 30%;
+      height:80%;
+      align: right;
+      top: 0px;
+      padding: 4px;
     }
 
     .favorited{
