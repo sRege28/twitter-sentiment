@@ -1,6 +1,6 @@
 var dbconfig =
 {
-  url : "mongodb://localhost:27017/twitter-sentiment"
+  url : "mongodb://srege:mongodb@ds123182.mlab.com:23182/twitter-sentiment"
 }
 
 var twitter_tokens =  {

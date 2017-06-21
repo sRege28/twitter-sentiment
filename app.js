@@ -26,6 +26,8 @@ var async = require("async");
 
 
 
+app.set('port', (process.env.PORT || 3000));
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -159,7 +161,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.listen(3000, function(err)
+app.listen(app.get('port'), function(err)
 {
   if(err)
     console.log(err);
