@@ -126,6 +126,9 @@ $('.button-checkbox').each(function () {
        {
          $("#searchButton").on("click", function()
            {
+
+
+
              var term = $("#companySearch").val();
              var filters = getAppliedFilters();
              console.log(filters);
@@ -161,6 +164,16 @@ $('.button-checkbox').each(function () {
 
 
            });
+       });
+
+
+       $(document).ready(function()
+       {
+         $("#clearTags").on("click", function()
+         {
+           console.log("Removing all");
+           $('#companyList').tagsinput('removeAll');
+         });
        });
 
        function getAppliedFilters()
@@ -233,6 +246,7 @@ $('.button-checkbox').each(function () {
 
 function displayVisualizations(data)
 {
+    $(".dashboard").empty();
     data.forEach(function(datum,i)
     {
       //console.log("Hello");
@@ -396,11 +410,13 @@ function displayVisualizations(data)
             <input type="text" class="oppningar" id="companyList" multiple="true" readonly/>
           </div>
         </div>
-
         <div class="row">
           <div class="col-md-6">
             <button class="btn btn-secondary" id="searchTwitter">
               Search for tweets
+            </button>
+            <button class="btn btn-secondary" id="clearTags">
+              Clear Tags
             </button>
           </div>
         </div>
