@@ -181,16 +181,7 @@ color: #04A3ED;
       margin: 0;
       display: none;
     }
-    .bootstrap-tagsinput.form-control input::-moz-placeholder {
-      color: yellow;
-      opacity: 1;
-    }
-    .bootstrap-tagsinput.form-control input:-ms-input-placeholder {
-      color: yellow;
-    }
-    .bootstrap-tagsinput.form-control input::-webkit-input-placeholder {
-      color: yellow;
-    }
+
     .bootstrap-tagsinput input:focus {
       border: none;
       box-shadow: none;
@@ -212,6 +203,12 @@ color: #04A3ED;
      .bootstrap-tagsinput .tag.btn.btn-primary{
 
      }
+
+    .bootstrap-tagsinput input{
+      display: none !important;
+      width: 0px !important;
+      background-color: red;
+    }
 
     .bootstrap-tagsinput .tag [data-role="remove"] {
       float: right;
