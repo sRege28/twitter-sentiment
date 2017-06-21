@@ -169,3 +169,5 @@ app.listen(app.get('port'), function(err)
     console.log("Magic at port 3000..");
 
 });
+
+module.exports = app;
