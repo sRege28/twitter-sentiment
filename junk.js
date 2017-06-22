@@ -77,7 +77,7 @@ coll.aggregate([
 
 
 
-
+db.companies.aggregate([{ $group: {_id: '$Twitter Handle', values: {$sum: 1} }  }]);
 
 
 

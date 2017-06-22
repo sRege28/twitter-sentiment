@@ -7,10 +7,13 @@ var links = new Array();
 
 function scrapeData(company, cb)
 {
-  let ans = {x:null, name:company["Company Name"]};
+
   request({"uri": company["URL"], "method": "GET"}, function (error, response, html)
   {
-    console.log("Scraping data for "+ans.name+"...");
+    this.ans = {};
+    this.ans.x = null;
+    this.ans.company = company["Company Name"];
+    //console.log("Scraping data for "+ans.name+"...");
     if(error)
       console.log(error);
     else
@@ -24,27 +27,27 @@ function scrapeData(company, cb)
             links.push($(this).attr('href'));
         });
         console.log(links.length);
-        var exp = "(?:[t|T]witter.com\/)(?:!#\/)?([_A-Za-z0-9]*)";
+        var exp = "(?:[t|T]witter\.com\/)(?:!#\/)?([_A-Za-z0-9]*)";
         var re = RegExp(exp,"i");
 
         for(let i of links)
           {
             if(re.test(i))
-              ans.x = re.exec(i);
+              this.ans.x = re.exec(i);
           }
-          if(ans.x === null)
+          if(this.ans.x === null)
             {
-              console.log("company "+company["Company Name"]+"No luck finding handle");
-              ans.x = '###';
+              //console.log("company "+company["Company Name"]+"No luck finding handle");
+              this.ans.x = '###';
              }
           else {
-            ans.x = ans.x[1];
-            console.log(" company "+company["Company Name"]+"handle found: "+ans.x);
+            this.ans.x = this.ans.x[1];
+            //console.log(" company "+company["Company Name"]+"handle found: "+ans.x);
           }
       }
-
+        cb(this.ans);
     }
-    cb(ans);
+
   });
 }
 
@@ -52,7 +55,7 @@ function getTwitterHandles(company, cb)
 {
    if(company["Twitter Handle"] === null || company["Twitter Handle"] === undefined  ||  company["Twitter Handle"] === "")
     {
-       console.log("company "+company["Company Name"]+" twitter handle not found, scraping the web...")
+       //console.log("company "+company["Company Name"]+" twitter handle not found, scraping the web...")
         if(company["URL"] === null || company["URL"] === undefined || company["URL"] === "")
            {
              company["Twitter Handle"] = "###";
@@ -61,14 +64,14 @@ function getTwitterHandles(company, cb)
            }
 
        else {
-          console.log("company "+company["Company Name"]+" URL found"+company["URL"]);
+          //console.log("company "+company["Company Name"]+" URL found"+company["URL"]);
           scrapeData(company, cb);
             }
       }
 
       else
         {
-          console.log("company "+company["Company Name"]+"exists, sending to tweet module...");
+          //console.log("company "+company["Company Name"]+"exists, sending to tweet module...");
           cb({ x: company["Twitter Handle"], name:company["Company Name"]});
         }
 }
