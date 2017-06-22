@@ -13,6 +13,7 @@ var http = require('http');
  */
 
 var port = normalizePort(process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || '3000');
+var ip = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 app.set('port', port);
 
 /**
@@ -25,7 +26,7 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+server.listen(port, ip);
 server.on('error', onError);
 server.on('listening', onListening);
 
