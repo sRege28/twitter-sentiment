@@ -20,7 +20,7 @@ var filterModule = require("./services/filterData.js");
 
 var scraper = require('./services/webScraper.js');
 
-var analytics = require('./services/analytics.js');
+var analytics = require('./services/betterAnalytics.js');
 
 var async = require("async");
 
@@ -121,7 +121,7 @@ app.post("/analytics", function(req,res)
   var db = req.db;
   var solns = [];
   //console.log(arr);
-
+/*
   async.each(arr, function(datum, cb)
     {
       analytics.applyAnalytics(datum, db, function(report)
@@ -137,6 +137,13 @@ app.post("/analytics", function(req,res)
        res.jsonp(solns);
       else
       console.log(err);
+    });
+*/
+
+    analytics.getAnalytics(arr,db, function(data)
+    {
+        console.log(data);
+        res.jsonp(data);
     });
 });
 

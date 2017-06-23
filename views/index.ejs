@@ -232,6 +232,7 @@ $('.button-checkbox').each(function () {
                          data : {arr : JSON.stringify(arr)},
                          success : function(analytics)
                          {
+                             console.log(analytics);
                              displayVisualizations(analytics);
                          },
                          error : function(err)
@@ -274,11 +275,11 @@ function displayVisualizations(data)
       $panel.find(".panel-heading").html(datum.parent);
       $body = $panel.find(".panel-body");
 
-      if(datum.countOftweets.length !=0)
+      if(datum["total_count"] != 0)
        {
-         var totalTweets = "<h5>Total tweets ="+ datum.countOftweets[0].positive_count+"</h5>";
-         var ratio = "<h5>Positive-to-negative ratio ="+datum.positive_to_negative[0].PtoNRatio+"</h5>";
-         var avg_sentiment = "<h5>Average sentiment ="+datum.average_sentiment[0]["Average Sentiment Score"]+"</h5>";
+         var totalTweets = "<h5>Total tweets ="+ datum.positive_count+"</h5>";
+         var ratio = "<h5>Positive-to-negative ratio ="+datum.PtoNRatio+"</h5>";
+         var avg_sentiment = "<h5>Average sentiment ="+datum["Average Sentiment Score"]+"</h5>";
 
          $body.append(totalTweets);
          $body.append(ratio);
@@ -287,9 +288,9 @@ function displayVisualizations(data)
          $body.append("<div class='card'><div class= 'card-block'><div class=piechart id ='pc"+i+"'></div></div></div>");
           var data = google.visualization.arrayToDataTable([
             ["Sentiment","Tweet count"],
-            ["Positive", datum.countOftweets[0].positive_count],
-            ["Neutral", datum.countOftweets[0].neutral_count],
-            ["Negative", datum.countOftweets[0].negative_count]
+            ["Positive", datum.positive_count],
+            ["Neutral", datum.neutral_count],
+            ["Negative", datum.negative_count]
           ]);
           var chart = new google.visualization.PieChart(document.getElementById("pc"+i));
           var options = {'title':'Tweet distribution by sentiment:',
@@ -327,8 +328,12 @@ function displayVisualizations(data)
           data2.addColumn("number", "Sentiment");
           data2.addColumn("number", "Favorite Count");
 
-          var arr = datum.highest_favorited;
-          arr.forEach(function(item)
+         var arr = datum.score_by_date;
+
+         arr.sort(function(a,b){return (a.favorite_count < b.favorite_count) ? 1 : ((b.favorite_count < a.favorite_count) ? -1 : 0);});
+
+
+          arr.slice(0,6).forEach(function(item)
             {
               data2.addRow([item.tweet, item.user, item.score, item.favorite_count])
             });
@@ -347,8 +352,13 @@ function displayVisualizations(data)
           data3.addColumn("number", "Sentiment");
           data3.addColumn("number", "Retweet Count");
 
-          var arr = datum.highest_retweeted;
-          arr.forEach(function(item)
+
+          var arr = datum.score_by_date;
+
+          arr.sort(function(a,b){return (a.retweet_count < b.retweet_count) ? 1 : ((b.retweet_count < a.retweet_count) ? -1 : 0);});
+
+
+          arr.slice(0,6).forEach(function(item)
             {
               data3.addRow([item.tweet, item.user, item.score, item.retweet_count])
             });
