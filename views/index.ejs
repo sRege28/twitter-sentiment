@@ -221,9 +221,25 @@ $('.button-checkbox').each(function () {
                 data: {arr : JSON.stringify(arr)},
                 success: function(data)
                 {
-                  console.log(data);
-                  displayVisualizations(data);
-
+                  if(data.msg == "Done")
+                  {
+                     console.log("Done, fetching analytics...");
+                     $.ajax
+                     ({
+                         url: "/analytics",
+                         dataType: "jsonp",
+                         type: "POST",
+                         data : {arr : JSON.stringify(arr)},
+                         success : function(analytics)
+                         {
+                             displayVisualizations(analytics);
+                         },
+                         error : function(err)
+                         {
+                           console.log(err);
+                         }
+                       });
+                   }
                 },
                 error: function(err){
                   if(err)

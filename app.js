@@ -107,14 +107,14 @@ app.post("/tweets", function(req,res, next)
       else
       {
         console.log("Sending success to client...");
-        //res.jsonp({msg : "Done!"});
-        next();
+        res.jsonp({msg : "Done"});
+        //next();
       }
    });
 });
 
 
-app.post("/tweets", function(req,res)
+app.post("/analytics", function(req,res)
 {
   console.log("Next route called!");
   var arr = JSON.parse(req.body.arr);

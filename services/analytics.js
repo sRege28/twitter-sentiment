@@ -178,7 +178,7 @@ function highestFavorited(parent, db, report, callback)
 
 function getScoreDistribution(parent, db, report, callback)
 {
-  console.log("Score distrib");
+  //console.log("Score distrib");
   db.collection("tweets").aggregate([
     {$match : {
                parent: parent
